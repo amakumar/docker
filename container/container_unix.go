@@ -253,7 +253,7 @@ func (container *Container) UpdateSandboxNetworkSettings(sb libnetwork.Sandbox) 
 }
 
 // BuildCreateEndpointOptions builds endpoint options from a given network.
-func (container *Container) BuildCreateEndpointOptions(n libnetwork.Network) ([]libnetwork.EndpointOption, error) {
+func (container *Container) BuildCreateEndpointOptions(n libnetwork.Network, isRestoring bool) ([]libnetwork.EndpointOption, error) {
 	var (
 		portSpecs     = make(nat.PortSet)
 		bindings      = make(nat.PortMap)
@@ -341,6 +341,14 @@ func (container *Container) BuildCreateEndpointOptions(n libnetwork.Network) ([]
 
 		createOptions = append(createOptions, libnetwork.EndpointOptionGeneric(genericOption))
 	}
+
+	/*if isRestoring && container.NetworkSettings.IPAddress != "" {
+		genericOption := options.Generic{
+			netlabel.IPAddress: net.ParseIP(container.NetworkSettings.IPAddress),
+		}
+
+		createOptions = append(createOptions, libnetwork.EndpointOptionGeneric(genericOption))
+	}*/
 
 	return createOptions, nil
 }
